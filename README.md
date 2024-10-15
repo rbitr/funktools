@@ -22,7 +22,7 @@ pip install -e .
 export ANTHROPIC_API_KEY = <your anthropic key>
 ```
 
-## Example
+## Example 1
 
 ```python
 def get_weather(location : str, unit: Literal["celsius", "farhenheit", "kelvin"] = "celsius") -> str:
@@ -70,4 +70,39 @@ print(response.content[1].input)
 #{'location': 'San Francisco', 'unit': 'kelvin'}
 
 ```
+
+## Example 2
+
+```python
+def plotxy(x : List[float], y: List[float], xlabel: str="", ylabel: str="") -> Dict:
+    plt.scatter(x, y)
+
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    output = BytesIO()
+    plt.savefig(output, format='png')
+    im_data = output.getvalue()
+    image_data = base64.b64encode(im_data).decode("utf-8")
+    plt.close()
+    return {"image":image_data}
+
+template(plotxy)
+
+#{'name': 'plotxy',
+# 'description': 'This function creates a scatter plot using the provided x and y data, sets optional x and y axis labels, saves the plot as a PNG image, encodes it in base64, and returns the encoded image data as a dictionary.',
+# 'input_schema': {'type': 'object',
+#  'properties': {'x': {'type': 'array',
+#    'items': {'type': 'number'},
+#    'description': 'A list of float values representing the x-coordinates of the data points to be plotted.'},
+#   'y': {'type': 'array',
+#    'items': {'type': 'number'},
+#    'description': 'A list of float values representing the y-coordinates of the data points to be plotted.'},
+#   'xlabel': {'default': '',
+#    'type': 'string',
+#    'description': 'An optional string parameter to set the label for the x-axis. Default is an empty string.'},
+#   'ylabel': {'default': '',
+#    'type': 'string',
+#    'description': 'An optional string parameter to set the label for the y-axis. Default is an empty string.'}},
+#  'required': ['x', 'y']}}
 
